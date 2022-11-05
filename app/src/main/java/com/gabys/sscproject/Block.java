@@ -1,69 +1,43 @@
 package com.gabys.sscproject;
 
-import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Block {
-    private ImageView view;
-    private TextView text;
-
-    private boolean highlighted = false;
+public abstract class Block {
+    private TextView shape;
 
     private Block parent;
     private Block child;
 
-    public Block() {
-    }
+    private boolean highlighted = false;
 
-    public Block(ImageView view) {
-        this.view = view;
-        this.highlighted = false;
-        this.parent = null;
-        this.child = null;
-    }
 
-    public Block(ImageView view, Block parent, Block child) {
-        this.view = view;
-        this.parent = parent;
-        this.child = child;
-    }
+    public abstract int getHighlightedShape();
+    public abstract int getNormalShape();
 
-    public ImageView getView() {
-        return view;
-    }
 
-    public void setView(ImageView view) {
-        this.view = view;
-    }
 
+
+    public TextView getShape() {
+        return shape;
+    }
+    public void setShape(TextView shape) {
+        this.shape = shape;
+    }
     public Block getParent() {
         return parent;
     }
-
     public void setParent(Block parent) {
         this.parent = parent;
     }
-
     public Block getChild() {
         return child;
     }
-
     public void setChild(Block child) {
         this.child = child;
     }
-
-    public TextView getText() {
-        return text;
-    }
-
-    public void setText(TextView text) {
-        this.text = text;
-    }
-
     public boolean isHighlighted() {
         return highlighted;
     }
-
     public void setHighlighted(boolean highlighted) {
         this.highlighted = highlighted;
     }

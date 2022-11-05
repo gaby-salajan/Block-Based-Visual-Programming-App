@@ -10,4 +10,6 @@
     <color name="clear">#00FFFFFF</color>
     <color name="red">#FF1100</color>
     <color name="block_blue">#FF558CBD</color>
+    <color name="grey">#FF686868</color>
+    <color name="highlight">#FF2B2B</color>
 </resources>
