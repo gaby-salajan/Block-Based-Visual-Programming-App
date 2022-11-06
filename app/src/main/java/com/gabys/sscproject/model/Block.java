@@ -1,4 +1,4 @@
-package com.gabys.sscproject;
+package com.gabys.sscproject.model;
 
 import android.widget.TextView;
 

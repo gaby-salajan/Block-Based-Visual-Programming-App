@@ -1,6 +1,8 @@
-package com.gabys.sscproject;
+package com.gabys.sscproject.model;
 
 import android.widget.TextView;
+
+import com.gabys.sscproject.R;
 
 public class BlockInitVar extends Block{
     public BlockInitVar(TextView shape) {

@@ -1,11 +1,13 @@
-package com.gabys.sscproject;
+package com.gabys.sscproject.ui;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -13,6 +15,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.gabys.sscproject.R;
+import com.gabys.sscproject.model.Block;
+import com.gabys.sscproject.model.BlockIF;
+import com.gabys.sscproject.model.BlockInitVar;
+import com.gabys.sscproject.model.BlockStart;
+import com.gabys.sscproject.model.BlockWhile;
 
 import java.util.ArrayList;
 
@@ -71,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
         pp = findViewById(R.id.buttonPP);
 
-        //TODO continue proper highlight
         pp.setOnClickListener(view -> highlightBlock(b3));
 
     }
@@ -111,13 +119,13 @@ public class MainActivity extends AppCompatActivity {
     private void highlightBlock(Block b){
         if(b != null) {
             TextView shape = b.getShape();
-            shape.setBackground(getDrawable(b.getHighlightedShape()));
+            shape.setBackground(ContextCompat.getDrawable(this, b.getHighlightedShape()));
         }
     }
     private void removeHighlight(Block b){
         if(b != null){
             TextView shape = b.getShape();
-            shape.setBackground(getDrawable(b.getNormalShape()));
+            shape.setBackground(ContextCompat.getDrawable(this, b.getNormalShape()));
         }
     }
 
@@ -139,8 +147,6 @@ public class MainActivity extends AppCompatActivity {
         removeHighlight(parent);
     }
 
-    //TODO clean mess
-    //TODO case for different blocks
     private void attachViewDragListener(ConstraintLayout layout){
         layout.setOnDragListener((view, event) -> {
 

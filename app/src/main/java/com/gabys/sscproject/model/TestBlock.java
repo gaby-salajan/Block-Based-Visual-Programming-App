@@ -1,8 +1,10 @@
-package com.gabys.sscproject;
+package com.gabys.sscproject.model;
 
 import android.widget.TextView;
 
-public class TestBlock extends Block{
+import com.gabys.sscproject.model.Block;
+
+public class TestBlock extends Block {
 
     public TestBlock(TextView shape) {
         setShape(shape);
