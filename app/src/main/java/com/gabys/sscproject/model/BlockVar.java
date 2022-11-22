@@ -4,30 +4,35 @@ import android.widget.TextView;
 
 import com.gabys.sscproject.R;
 
-public class BlockIF extends Block{
-    Block conditionBlock;
+public class BlockVar extends Block{
 
-    public BlockIF(TextView shape) {
-        setShape(shape);
+    public BlockVar(){
+        super();
+    }
+
+    public BlockVar(TextView shape) {
+        super(shape);
     }
 
     @Override
     public int getHighlightedShape() {
-        return R.drawable.block_if_h;
+        return R.drawable.block_while_h;
     }
 
     @Override
     public int getNormalShape() {
-        return R.drawable.block_if;
+        return R.drawable.block_while;
     }
 
     @Override
     public BlockType getType() {
-        return BlockType.IF;
+        return BlockType.VAR;
     }
 
     @Override
     public String getCmd() {
-        return "if";
+        return "var a =";
     }
+
+
 }

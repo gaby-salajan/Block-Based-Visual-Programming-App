@@ -1,293 +1,98 @@
 package com.gabys.sscproject.ui;
 
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-
-import android.content.ClipData;
-import android.content.ClipDescription;
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.DragEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.gabys.sscproject.R;
-import com.gabys.sscproject.model.Block;
-import com.gabys.sscproject.model.BlockIF;
-import com.gabys.sscproject.model.BlockInitVar;
-import com.gabys.sscproject.model.BlockStart;
-import com.gabys.sscproject.model.BlockWhile;
+import com.google.android.material.navigation.NavigationView;
 
-import java.util.ArrayList;
-
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+    private DrawerLayout mDrawer;
+    private Toolbar toolbar;
+    private NavigationView nvDrawer;
+    private FragmentManager fragmentManager;
 
-    TextView v1, v2;
-    Block block1, block2;
+    private CodeFragment codeFragment;
+    private BlocksFragment blocksFragment;
 
-    Block potentialParent = null;
-    Block currentBlock = null;
-
-    ConstraintLayout layout;
-
-    Button pp;
-
-    ArrayList<Block> blocks;
-
-    Block testB,b3;
-    TextView test,v3;
+    private final int codeFragmentIndex = R.id.nav_second_fragment;
+    private final int blocksFragmentIndex = R.id.nav_first_fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        v1 = findViewById(R.id.tv_while);
-        v2 = findViewById(R.id.tv_start);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        layout = findViewById(R.id.layout1);
-        blocks = new ArrayList<>();
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        block1 = new BlockWhile(v1);
-        block2 = new BlockStart(v2);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        nvDrawer = (NavigationView) findViewById(R.id.nvView);
 
+        setupDrawerContent(nvDrawer);
 
-        blocks.add(block1);
-        blocks.add(block2);
+        fragmentManager = getSupportFragmentManager();
+        try {
+            codeFragment = (CodeFragment) CodeFragment.class.newInstance();
+            blocksFragment = (BlocksFragment) BlocksFragment.class.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        fragmentManager.beginTransaction().add(R.id.flContent, codeFragment, "code").commit();
+        fragmentManager.beginTransaction().add(R.id.flContent, blocksFragment, "blocks").commit();
 
+        blocksFragment.addFragmentManager(fragmentManager);
+        blocksFragment.addCodeFragment(codeFragment);
 
-
-        attachDragListener(block1);
-        attachDragListener(block2);
-        attachViewDragListener(layout);
-
-        test = findViewById(R.id.tv_if);
-        testB = new BlockIF(test);
-        blocks.add(testB);
-        attachDragListener(testB);
-
-        v3 = findViewById(R.id.tv3);
-        b3 = new BlockInitVar(v3);
-        blocks.add(b3);
-        attachDragListener(b3);
-
-
-        pp = findViewById(R.id.buttonPP);
-
-        pp.setOnClickListener(view -> highlightBlock(b3));
-
+        fragmentManager.beginTransaction().hide(blocksFragment).commit();
     }
 
-    private void attachDragListener(Block b) {
-        b.getShape().setOnLongClickListener(view -> {
-            ClipData dragData = ClipData.newPlainText("", "");
-            View.DragShadowBuilder myShadow = new View.DragShadowBuilder(view);
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
+                });
+    }
 
-            view.startDragAndDrop(dragData, myShadow, view,0);
+    public void selectDrawerItem(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case blocksFragmentIndex:
+                if (fragmentManager.findFragmentByTag("blocks") == null)
+                    fragmentManager.beginTransaction().add(R.id.flContent, blocksFragment, "blocks").commit();
+                fragmentManager.beginTransaction().show(blocksFragment).commit();
+                fragmentManager.beginTransaction().hide(codeFragment).commit();
+                setTitle("Blocks");
+                break;
+            case codeFragmentIndex:
+                fragmentManager.beginTransaction().show(codeFragment).commit();
+                fragmentManager.beginTransaction().hide(blocksFragment).commit();
+                setTitle("Code Section");
+                break;
+            default:
+        }
+        menuItem.setChecked(true);
+        mDrawer.closeDrawers();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            mDrawer.openDrawer(GravityCompat.START);
             return true;
-        });
-    }
-
-    private Block checkForPotentialParent(TextView shape, float x, float y){
-        float minX, minY, maxX, maxY;
-
-        for (Block b : blocks){
-            if(shape.equals(b.getShape()))
-                continue;
-
-            minX = b.getShape().getX();
-            minY = b.getShape().getY();
-            maxX = b.getShape().getX() + b.getShape().getWidth();
-            maxY = b.getShape().getY() + b.getShape().getHeight();
-            if (minX <= x && minY <= y && x <= maxX && y <= maxY){
-                highlightBlock(b);
-                return blocks.get(blocks.indexOf(b));
-            }
-            else{
-                removeHighlight(b);
-            }
         }
-        return null;
-    }
-
-    private void highlightBlock(Block b){
-        if(b != null) {
-            TextView shape = b.getShape();
-            shape.setBackground(ContextCompat.getDrawable(this, b.getHighlightedShape()));
-        }
-    }
-    private void removeHighlight(Block b){
-        if(b != null){
-            TextView shape = b.getShape();
-            shape.setBackground(ContextCompat.getDrawable(this, b.getNormalShape()));
-        }
-    }
-
-    private Block getCurrentBlock(TextView item){
-        for(Block b : blocks){
-            if (b.getShape().equals(item))
-                return blocks.get(blocks.indexOf(b));
-        }
-        return null;
-    }
-
-    private void snapToParent(Block child, Block parent){
-        child.setParent(parent);
-        parent.setChild(child);
-
-        child.getShape().setX(parent.getShape().getX());
-        child.getShape().setY(parent.getShape().getY()+(parent.getShape().getHeight() - 30f));
-
-        removeHighlight(parent);
-    }
-
-    private void attachViewDragListener(ConstraintLayout layout){
-        layout.setOnDragListener((view, event) -> {
-
-            View draggableItem = (View) event.getLocalState();
-            currentBlock = getCurrentBlock((TextView) draggableItem);
-
-            assert currentBlock != null;
-            if (currentBlock.getClass().equals(BlockStart.class))
-                    return handleDrag(draggableItem, event, view);
-            else
-                return handleChildDrag(draggableItem, event, view);
-        });
-    }
-    private boolean handleChildDrag(View draggableItem, DragEvent event, View view) {
-        switch(event.getAction()) {
-            case DragEvent.ACTION_DRAG_STARTED:
-                return true;
-
-            case DragEvent.ACTION_DRAG_ENTERED:
-                ConstraintLayout parentArea = (ConstraintLayout) draggableItem.getParent();
-                parentArea.removeView(draggableItem);
-
-                return true;
-
-            case DragEvent.ACTION_DRAG_LOCATION:
-                handleWhileDragging((TextView) draggableItem, event, view);
-
-                return true;
-
-            case DragEvent.ACTION_DRAG_EXITED:
-                draggableItem.setVisibility(View.VISIBLE);
-                view.invalidate();
-                return true;
-
-            case DragEvent.ACTION_DROP:
-                view.setAlpha(1.0f);
-
-                if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                    String draggedData = (String) event.getClipData().getItemAt(0).getText();
-                    System.out.println("draggedData :" + draggedData);
-                }
-
-                draggableItem.setX(event.getX() - (draggableItem.getWidth() / 2.0f));
-                draggableItem.setY(event.getY() - (draggableItem.getHeight() / 2.0f));
-
-                ConstraintLayout dropArea = (ConstraintLayout) view;
-                dropArea.addView(draggableItem);
-
-                if(potentialParent != null){
-                    potentialParent.setHighlighted(false);
-                    snapToParent(currentBlock, potentialParent);
-                }
-                view.invalidate();
-
-                return true;
-
-            case DragEvent.ACTION_DRAG_ENDED:
-                draggableItem.setVisibility(View.VISIBLE);
-                view.invalidate();
-
-                if (event.getResult())
-                    Toast.makeText(MainActivity.this, "The drop was handled.", Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(MainActivity.this, "The drop didn't work.", Toast.LENGTH_LONG).show();
-                return true;
-
-            default:
-                Log.e("DragDrop", "Unknown action type received by OnDragListener.");
-                return false;
-        }
-    }
-
-    private boolean handleDrag(View draggableItem, DragEvent event, View view) {
-        switch(event.getAction()) {
-            case DragEvent.ACTION_DRAG_STARTED:
-                return true;
-
-            case DragEvent.ACTION_DRAG_ENTERED:
-                ConstraintLayout parentArea = (ConstraintLayout) draggableItem.getParent();
-                parentArea.removeView(draggableItem);
-
-                return true;
-
-            case DragEvent.ACTION_DRAG_LOCATION:
-                return true;
-
-            case DragEvent.ACTION_DRAG_EXITED:
-                draggableItem.setVisibility(View.VISIBLE);
-                view.invalidate();
-                return true;
-
-            case DragEvent.ACTION_DROP:
-                view.setAlpha(1.0f);
-
-                if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                    String draggedData = (String) event.getClipData().getItemAt(0).getText();
-                    System.out.println("draggedData :" + draggedData);
-                }
-
-                draggableItem.setX(event.getX() - (draggableItem.getWidth() / 2.0f));
-                draggableItem.setY(event.getY() - (draggableItem.getHeight() / 2.0f));
-
-                ConstraintLayout dropArea = (ConstraintLayout) view;
-                dropArea.addView(draggableItem);
-
-                view.invalidate();
-
-                return true;
-
-            case DragEvent.ACTION_DRAG_ENDED:
-                draggableItem.setVisibility(View.VISIBLE);
-                view.invalidate();
-
-                if (event.getResult())
-                    Toast.makeText(MainActivity.this, "The drop was handled.", Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(MainActivity.this, "The drop didn't work.", Toast.LENGTH_LONG).show();
-                return true;
-
-            default:
-                Log.e("DragDrop", "Unknown action type received by OnDragListener.");
-                return false;
-        }
-    }
-
-    private void handleWhileDragging(TextView draggableItem, DragEvent event, View view) {
-        potentialParent = checkForPotentialParent(draggableItem, event.getX(), event.getY());
-        if(potentialParent != null){
-            if(!potentialParent.isHighlighted()){
-                highlightBlock(potentialParent);
-                potentialParent.setHighlighted(true);
-            }
-        }
-        else{
-            if(currentBlock.getParent() != null)
-                currentBlock.getParent().setChild(null);
-            currentBlock.setParent(null);
-
-
-            removeHighlight(potentialParent);
-            view.invalidate();
-        }
+        return super.onOptionsItemSelected(item);
     }
 }

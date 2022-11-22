@@ -7,8 +7,7 @@ import com.gabys.sscproject.R;
 public class BlockStart extends Block{
 
     public BlockStart(TextView shape) {
-        setParent(null);
-        setShape(shape);
+        super(shape);
     }
 
     @Override
@@ -19,5 +18,15 @@ public class BlockStart extends Block{
     @Override
     public int getNormalShape() {
         return R.drawable.block_start;
+    }
+
+    @Override
+    public BlockType getType() {
+        return BlockType.START;
+    }
+
+    @Override
+    public String getCmd() {
+        return "start";
     }
 }

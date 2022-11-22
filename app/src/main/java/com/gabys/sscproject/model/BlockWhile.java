@@ -18,4 +18,14 @@ public class BlockWhile extends Block{
     public int getNormalShape(){
         return R.drawable.block_while;
     }
+
+    @Override
+    public BlockType getType() {
+        return BlockType.WHILE;
+    }
+
+    @Override
+    public String getCmd() {
+        return "while";
+    }
 }
