@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Enter the value of the block"
+        android:textColor="@color/black"
+        android:textSize="24sp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter value"
+        android:inputType="text"
+        android:imeOptions="actionNext"
+        android:id="@+id/field1"/>
+
+<!--    <EditText-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="c"-->
+<!--        android:inputType="number"-->
+<!--        android:imeOptions="actionNext"-->
+<!--        android:id="@+id/field2"/>-->
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RadioButton
+            android:id="@+id/isNumberButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="number" />
+
+        <RadioButton
+            android:id="@+id/isTextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="text" />
+
+        <RadioButton
+            android:id="@+id/isObjectButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="object" />
+        <RadioButton
+            android:id="@+id/isConditionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="condition" />
+    </RadioGroup>
+
+<!--    <CheckBox-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="d"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:id="@+id/terms_cb"-->
+<!--        android:layout_marginBottom="16dp"/>-->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Submit"
+        android:textColor="@color/purple_200"
+        android:background="@color/purple_500"
+        android:id="@+id/submit_button"/>
+
+</LinearLayout>
