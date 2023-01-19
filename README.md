@@ -1,4 +1,4 @@
-# SSC_Project
+# Block Based Visual Programming
 
 ![](images/im1.png)
 ![](images/im2.png)
